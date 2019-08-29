@@ -77,18 +77,18 @@
   until: routetable is not failed
   retries: 5
 
-#- name: Create ssh key pair for workshop {{ name_prefix }}
-#  ec2_key:
-#    name: "{{ skylight_user }}-{{ name_prefix }}-key"
-#    region: "{{ ec2_region }}"
-#  register: create_key
-#
-#- name: Save the private key
-#  copy:
-#    content: "{{ create_key.key.private_key }}"
-#    dest: "{{ playbook_dir }}/workshops/{{ name_prefix }}/{{ skylight_user }}-{{ name_prefix }}-private.pem"
-#    mode: '0400'
-#  when: create_key.changed
+- name: Create ssh key pair for workshop {{ name_prefix }}
+  ec2_key:
+    name: "{{ skylight_user }}-{{ name_prefix }}-key"
+    region: "{{ ec2_region }}"
+  register: create_key
+
+- name: Save the private key
+  copy:
+    content: "{{ create_key.key.private_key }}"
+    dest: "{{ playbook_dir }}/workshops/{{ name_prefix }}/{{ skylight_user }}-{{ name_prefix }}-private.pem"
+    mode: '0400'
+  when: create_key.changed
 
 ################### Create Security Groups ###################
 - name: Tower | Create Ansible Control Node security group
@@ -222,7 +222,7 @@
 
 - name: DomainController | Launch instance
   ec2:
-    key_name: "{{ ec2_key_name }}"
+    key_name: "{{ skylight_user }}-{{ name_prefix }}-key"
     group: "{{ name_prefix }}-windcsg"
     instance_type: "{{ ec2_windc_instance_type }}"
     exact_count: 1
@@ -252,7 +252,7 @@
 
 - name: Windows | Launch instance 1
   ec2:
-    key_name: "{{ ec2_key_name }}"
+    key_name: "{{ skylight_user }}-{{ name_prefix }}-key"
     group:
       - "{{ name_prefix }}-windowssg"
     instance_type: "{{ ec2_windows_instance_type }}"
@@ -284,7 +284,7 @@
 
 - name: Workstation | Launch instance
   ec2:
-    key_name: "{{ ec2_key_name }}"
+    key_name: "{{ skylight_user }}-{{ name_prefix }}-key"
     group:
       - "{{ name_prefix }}-windowssg"
     instance_type: "{{ ec2_windows_workstation_instance_type }}"
@@ -316,7 +316,7 @@
 
 - name: Launch Tower Instance
   ec2:
-    key_name: "{{ ec2_key_name }}"
+    key_name: "{{ skylight_user }}-{{ name_prefix }}-key"
     group: "{{ name_prefix }}-towersg"
     instance_type: "{{ ec2_tower_instance_type }}"
     exact_count: 1
@@ -347,7 +347,7 @@
 
 - name: GitLab | Launch Instance
   ec2:
-    key_name: "{{ ec2_key_name }}"
+    key_name: "{{ skylight_user }}-{{ name_prefix }}-key"
     group: "{{ name_prefix }}-gitlabsg"
     instance_type: "{{ ec2_gitlab_instance_type }}"
     exact_count: 1
@@ -377,7 +377,7 @@
 
 - name: Docs | Launch Instance
   ec2:
-    key_name: "{{ ec2_key_name }}"
+    key_name: "{{ skylight_user }}-{{ name_prefix }}-key"
     group: "{{ name_prefix }}-docssg"
     instance_type: "{{ ec2_docs_instance_type }}"
     exact_count: 1
