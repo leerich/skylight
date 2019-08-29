@@ -77,18 +77,18 @@
   until: routetable is not failed
   retries: 5
 
-- name: Create ssh key pair for workshop {{ name_prefix }}
-  ec2_key:
-    name: "{{ skylight_user }}-{{ name_prefix }}-key"
-    region: "{{ ec2_region }}"
-  register: create_key
-
-- name: Save the private key
-  copy:
-    content: "{{ create_key.key.private_key }}"
-    dest: "{{ playbook_dir }}/workshops/{{ name_prefix }}/{{ skylight_user }}-{{ name_prefix }}-private.pem"
-    mode: '0400'
-  when: create_key.changed
+#- name: Create ssh key pair for workshop {{ name_prefix }}
+#  ec2_key:
+#    name: "{{ skylight_user }}-{{ name_prefix }}-key"
+#    region: "{{ ec2_region }}"
+#  register: create_key
+#
+#- name: Save the private key
+#  copy:
+#    content: "{{ create_key.key.private_key }}"
+#    dest: "{{ playbook_dir }}/workshops/{{ name_prefix }}/{{ skylight_user }}-{{ name_prefix }}-private.pem"
+#    mode: '0400'
+#  when: create_key.changed
 
 ################### Create Security Groups ###################
 - name: Tower | Create Ansible Control Node security group
@@ -708,4 +708,3 @@
 # - name: Configure external tower if needed
 #   include: external_tower.yml
 #   when: skylight_external_tower
-
